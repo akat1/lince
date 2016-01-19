@@ -1,4 +1,4 @@
-Lince - ~prolog interpreter
+Lince - ~prolog interpreter wannabe
 
 1. Grammar:
 
