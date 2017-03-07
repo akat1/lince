@@ -77,22 +77,22 @@ let target = ref ([])
 env := []
 ;;
 
-while true do
-	print_string(prompt);
-	flush stdout;
-	try
-		
-		(* read query *)
-		env := [];
-		target := Parser.commandline LexerCommandLine.tokenCommandLine lexbuf;
-		env := runPrologMachine (!env) (!target) (!database);
-		print_string (show_environment (!env));
-		()
-	with
-		Parsing.Parse_error -> ( print_string ( "Errr... What?!\n" ) ; Lexing.flush_input lexbuf )
-		| Failure -> print_string("no\n")
-		| _ -> ( print_string ("What did you say?!\n") ; Lexing.flush_input lexbuf ) 
-	;
-	()
-done
+let loop_exit = ref false in
+    while not !loop_exit do
+        print_string(prompt);
+        flush stdout;
+        try
+            (* read query *)
+            env := [];
+            target := Parser.commandline LexerCommandLine.tokenCommandLine lexbuf;
+            env := runPrologMachine (!env) (!target) (!database);
+            print_string (show_environment (!env));
+            ()
+        with
+            Parsing.Parse_error -> ( print_string ( "Errr... What?!\n" ) ; Lexing.flush_input lexbuf )
+            | Failure -> print_string("no\n")
+            | _ -> print_string("\nBye!\n"); loop_exit := true
+        ;
+        ()
+    done
 
